@@ -1,0 +1,22 @@
+# Branch protection for main
+
+These settings should be applied in GitHub under `Settings > Branches > Add rule`.
+
+Rule name: `main`
+Branch: `main`
+Protection: enabled
+
+Required settings:
+- Require a pull request before merging: true
+- Require approvals: 1
+- Require status checks to pass before merging:
+  - `CI (lint)`
+  - `CI (test)`
+- Require conversation resolution before merging: true
+- Do not allow bypassing the above settings: true
+- Require linear history: true
+- Allow force pushes: false
+- Allow deletions: false
+
+Optional (recommended):
+- Restrict pushes that create files: true (configure allowed paths to source/docs only)

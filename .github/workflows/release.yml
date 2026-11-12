@@ -1,0 +1,85 @@
+name: Windows Release Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+  SOLUTION_DIR: ${{ github.workspace }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-build.txt
+
+      - name: Build executable with PyInstaller
+        run: |
+          python build_windows.py
+        shell: powershell
+
+      - name: Verify executable exists
+        run: |
+          if (-not (Test-Path -LiteralPath dist\VectorBridgeCADStudio.exe -PathType Leaf)) {
+            throw "Expected executable not found: dist\VectorBridgeCADStudio.exe"
+          }
+        shell: powershell
+
+      - name: Upload executable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VectorBridgeCADStudio.exe
+          path: dist\VectorBridgeCADStudio.exe
+          if-no-files-found: error
+
+      - name: Build installer with Inno Setup
+        run: |
+          if (-not (Get-Command ISCC.exe -ErrorAction SilentlyContinue)) {
+            throw "Inno Setup 6 is required. Install JRSoftware.InnoSetup, then rerun this workflow."
+          }
+          $compiler = Get-Command ISCC.exe
+          $compilerPath = if ([string]::IsNullOrWhiteSpace($compiler.Source)) { $compiler.FullName } else { $compiler.Source }
+          & $compilerPath installer.iss
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup compiler failed with exit code $LASTEXITCODE" }
+        shell: powershell
+
+      - name: Verify installer exists
+        run: |
+          if (-not (Test-Path -LiteralPath dist\VectorBridgeCADStudio-Setup.exe -PathType Leaf)) {
+            throw "Expected installer not found: dist\VectorBridgeCADStudio-Setup.exe"
+          }
+        shell: powershell
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VectorBridgeCADStudio-Setup.exe
+          path: dist\VectorBridgeCADStudio-Setup.exe
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist\VectorBridgeCADStudio.exe
+            dist\VectorBridgeCADStudio-Setup.exe
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

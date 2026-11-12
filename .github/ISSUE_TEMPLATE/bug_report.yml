@@ -1,0 +1,55 @@
+name: Bug report
+description: Create a report to help us improve the project
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: A clear description of the problem.
+      placeholder: Describe what happened.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to reproduce the issue.
+      placeholder: 1. Do this...\n2. See that...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      description: e.g. Windows 11, Windows 10
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: Version of VectorBridge (or "source build").
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste any error output.
+      render: text
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklists
+      options:
+        - label: I have searched existing issues.
+        - label: I have included all required information.
