@@ -1,0 +1,63 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+*.lib/
+*.manifest
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+build/
+develop-eggs/
+lib/
+parts/
+sdist/
+var/
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# PyInstaller
+*.spec
+_build/
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS / editor
+Thumbs.db
+Desktop.ini
+*.user
+*.suo
+
+# Tests / caches
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Build outputs (never commit binaries)
+/dist/
+*.exe
+*.ico
+__pycache__/
+*.pyc
+*.pyo
+
+# Renders / temp
+*.bak
+*.tmp
